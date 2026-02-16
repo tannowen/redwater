@@ -5,7 +5,6 @@ import { instagramUrl, contactEmail, upcomingShows, merchDetails } from './data'
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -14,85 +13,29 @@ function App() {
 
   const heroImage = galleryImages[0];
 
+  const base = window.location.pathname.endsWith('/') ? window.location.pathname : `${window.location.pathname}/`;
+  const jensonUrl = `${window.location.origin}${base.replace(/\/+$/, '/')}where-is-jenson`;
   const openJenson = (e) => {
     e.preventDefault();
-    setMenuOpen(false);
-    window.open('/where-is-jenson', 'WhereIsJenson', 'width=1100,height=800,scrollbars=yes,resizable=yes');
+    window.open(jensonUrl, 'WhereIsJenson', 'width=1100,height=800,scrollbars=yes,resizable=yes');
   };
-
-  const navLinks = [
-    { href: '#about', label: 'About' },
-    { href: '#music', label: 'Music' },
-    { href: '#shows', label: 'Shows' },
-    { href: '#gallery', label: 'Gallery' },
-    { href: '#merch', label: 'Merch' },
-    { href: '#contact', label: 'Contact' },
-  ];
 
   return (
     <div className="band-site">
       <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
         <a href="#" className="logo">Red Water</a>
-        <nav className="nav-desktop">
+        <nav className="site-nav">
           <a href="#about">About</a>
           <a href="#music">Music</a>
           <a href="#shows">Shows</a>
           <a href="#gallery">Gallery</a>
           <a href="#merch">Merch</a>
           <a href="#contact">Contact</a>
-          <a
-            href="/where-is-jenson"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="nav-jenson"
-            onClick={(e) => {
-              e.preventDefault();
-              window.open('/where-is-jenson', 'WhereIsJenson', 'width=1100,height=800,scrollbars=yes,resizable=yes');
-            }}
-          >
+          <a href={jensonUrl} className="nav-jenson" onClick={openJenson}>
             Where is Jenson
           </a>
         </nav>
-        <button
-          type="button"
-          className="nav-toggle"
-          aria-label="Open menu"
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((o) => !o)}
-        >
-          <span className="nav-toggle-bar" />
-          <span className="nav-toggle-bar" />
-          <span className="nav-toggle-bar" />
-        </button>
       </header>
-      <div className={`nav-dropdown ${menuOpen ? 'nav-dropdown-open' : ''}`}>
-        <nav className="nav-dropdown-inner">
-          {navLinks.map(({ href, label }) => (
-            <a
-              key={href}
-              href={href}
-              onClick={() => setMenuOpen(false)}
-            >
-              {label}
-            </a>
-          ))}
-          <a
-            href="/where-is-jenson"
-            className="nav-jenson"
-            onClick={openJenson}
-          >
-            Where is Jenson
-          </a>
-        </nav>
-      </div>
-      {menuOpen && (
-        <button
-          type="button"
-          className="nav-backdrop"
-          aria-label="Close menu"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
 
       <section className="hero">
         {heroImage && <div className="hero-img" style={{ backgroundImage: `url(${heroImage})` }} aria-hidden="true" />}
