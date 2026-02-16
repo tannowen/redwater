@@ -59,6 +59,91 @@
   color: #e63950;
 }
 
+/* Hamburger — visible only on small screens */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  border-radius: 4px;
+}
+.nav-toggle:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+.nav-toggle-bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: currentColor;
+  border-radius: 1px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(2) {
+  opacity: 0;
+}
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Dropdown menu */
+.nav-dropdown {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  max-height: 0;
+  overflow: hidden;
+  background: rgba(6, 6, 8, 0.98);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  transition: max-height 0.3s ease;
+}
+.nav-dropdown-open {
+  max-height: calc(100vh - 56px);
+}
+.nav-dropdown-inner {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1.5rem 1.5rem;
+  gap: 0;
+}
+.nav-dropdown-inner a {
+  padding: 0.85rem 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  letter-spacing: 0.02em;
+}
+.nav-dropdown-inner a:hover {
+  color: var(--text);
+}
+.nav-dropdown-inner a.nav-jenson {
+  color: var(--red-primary);
+  font-weight: 600;
+  border-bottom: none;
+  margin-top: 0.25rem;
+}
+.nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 98;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  cursor: pointer;
+}
+
 /* Hero */
 .hero {
   position: relative;
@@ -421,8 +506,11 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .site-header nav {
+  .nav-desktop {
     display: none;
+  }
+  .nav-toggle {
+    display: flex;
   }
   .show-item {
     grid-template-columns: 1fr;
