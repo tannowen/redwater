@@ -1,0 +1,51 @@
+:root {
+  scroll-behavior: smooth;
+  --bg-deep: #060608;
+  --bg-card: #0c0c0e;
+  --bg-elevated: #111114;
+  --red-primary: #c41e3a;
+  --red-dim: #8b1528;
+  --red-glow: rgba(196, 30, 58, 0.4);
+  --water: #0f2847;
+  --water-light: #1a3a5c;
+  --text: #eae8e5;
+  --text-muted: #8c8984;
+  --border: rgba(255, 255, 255, 0.06);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+  color: var(--text);
+  background-color: var(--bg-deep);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--red-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+a:hover {
+  color: #e63950;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--red-primary);
+  color: #fff;
+}
