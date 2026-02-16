@@ -1,15 +1,15 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
-import { Canvas, useLoader } from '@react-three/fiber';
-import { OrbitControls, useTexture, Html } from '@react-three/drei'; // Added Html import
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import './WhereIsJenson.css';
-
-// Keep using the import if the file is in src, or use '/earth-daymap.jpg' if in public
-import earthTextureUrl from './earth-daymap.jpg'; 
 
 const JENSON_PASSWORD = '6969';
 const INDIA_LAT = 21.0;
 const INDIA_LON = 78.0;
+
+const EARTH_TEXTURE_URL = '/earth-daymap.jpg';
+const EARTH_TEXTURE_FALLBACK = 'https://upload.wikimedia.org/wikipedia/commons/c/c3/Solarsystemscope_texture_2k_earth_daymap.jpg';
 
 function latLonToXYZ(lat, lon, radius) {
   const phi = (90 - lat) * (Math.PI / 180);
@@ -23,40 +23,33 @@ function latLonToXYZ(lat, lon, radius) {
 
 function Earth() {
   const { x, y, z } = latLonToXYZ(INDIA_LAT, INDIA_LON, 1.015);
-  
-  // Safe texture loading
-  let texture;
-  try {
-    texture = useLoader(THREE.TextureLoader, earthTextureUrl);
-  } catch (e) {
-    texture = null;
-  }
+  const [texture, setTexture] = useState(null);
+
+  useEffect(() => {
+    const loader = new THREE.TextureLoader();
+    loader.setCrossOrigin('anonymous');
+    const apply = (tex) => {
+      tex.colorSpace = THREE.SRGBColorSpace;
+      setTexture(tex);
+    };
+    loader.load(EARTH_TEXTURE_URL, apply, undefined, () => {
+      loader.load(EARTH_TEXTURE_FALLBACK, apply, undefined, () => setTexture(null));
+    });
+  }, []);
 
   return (
     <group rotation={[0, (-INDIA_LON * Math.PI) / 180, 0]}>
-      {/* 1. THE EARTH */}
       <mesh>
         <sphereGeometry args={[1, 64, 64]} />
-        <meshStandardMaterial
-          map={texture}
-          color="white"
-          metalness={0.1}
-          roughness={0.5}
-          emissiveMap={texture}
-          emissive="white"
-          emissiveIntensity={0.2}
-        />
+        {texture ? (
+          <meshBasicMaterial key="earth" map={texture} toneMapped={false} />
+        ) : (
+          <meshBasicMaterial key="blue" color="#1a3a5c" />
+        )}
       </mesh>
 
-      {/* 2. THE RED MARKER */}
-      <mesh position={[x, y, z]}>
-        <sphereGeometry args={[0.025, 16, 16]} />
-        <meshBasicMaterial color="#c41e3a" toneMapped={false} />
-      </mesh>
-
-      {/* 3. THE JENSON UI (Now safely inside the 3D scene) */}
       <Html position={[x, y, z]} center occlude>
-        <div className="jenson-arrow-wrap" style={{ position: 'relative', left: '0',top: '0' }}>
+        <div className="jenson-arrow-wrap" style={{ position: 'relative', left: '0', top: '0' }}>
           <div className="jenson-arrow" />
           <img src="/jenson/jenson.png" alt="Jenson" className="jenson-photo" />
         </div>
@@ -68,9 +61,9 @@ function Earth() {
 function GlobeScene() {
   return (
     <>
-      <ambientLight intensity={1.2} />
-      <directionalLightQlCt position={[5, 5, 5]} intensity={4.0} />
-      <directionalLight position={[-3, -2, 2]} intensity={1.0} />
+      <ambientLight intensity={0.6} />
+      <directionalLight position={[3, 2, 5]} intensity={0.9} />
+      <directionalLight position={[-2, -1, 2]} intensity={0.3} />
       <Earth />
       <OrbitControls enableZoom={true} enablePan={false} minDistance={1.5} maxDistance={4} />
     </>
